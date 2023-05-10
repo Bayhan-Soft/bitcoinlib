@@ -272,7 +272,7 @@ class BitcoindClient(BaseClient):
             return [txid]
         return []
 
-    def getblock(self, blockid, parse_transactions=True, page=1, limit=None):
+    def getblock(self, blockid, parse_transactions=True, get_input_values=True, page=1, limit=None):
         if isinstance(blockid, int) or len(blockid) < 10:
             blockid = self.proxy.getblockhash(int(blockid))
         if not limit:
@@ -284,7 +284,7 @@ class BitcoindClient(BaseClient):
             for tx in bd['tx'][(page - 1) * limit:page * limit]:
                 tx['time'] = bd['time']
                 tx['blockhash'] = bd['hash']
-                txs.append(self._parse_transaction(tx, block_height=bd['height'], get_input_values=True))
+                txs.append(self._parse_transaction(tx, block_height=bd['height'], get_input_values=get_input_values))
         else:
             bd = self.proxy.getblock(blockid, 1)
             txs = bd['tx']
